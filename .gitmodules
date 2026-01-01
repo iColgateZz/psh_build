@@ -1,0 +1,6 @@
+[submodule "arena_allocator"]
+	path = arena_allocator
+	url = https://github.com/iColgateZz/arena_allocator.git
+[submodule "psh_core"]
+	path = psh_core
+	url = https://github.com/iColgateZz/psh_core.git
