@@ -1,4 +1,4 @@
-CFLAGS=-Wall -Wextra -O2 -Iinclude
+CFLAGS=-Wall -Wextra -O2 -Iinclude -Iarena_allocator -Ipsh_core
 CC=gcc
 EXE=app
 
