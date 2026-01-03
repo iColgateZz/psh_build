@@ -60,7 +60,11 @@ void psh_rebuild(i32 argc, byte *argv[], byte *source, ...);
     #define psh_cc_flags(cmd) psh_cmd_append(cmd, "-Wall", "-Wextra")
 #endif
 
+#ifndef psh_cc_include
+    #define psh_cc_include(cmd, include) psh_cmd_append(cmd, "-I"include)
 #endif
+
+#endif //PSH_BUILD_INCLUDE
 
 #ifdef PSH_BUILD_IMPL
 
@@ -102,7 +106,8 @@ void psh_rebuild(i32 argc, byte *argv[], byte *source, ...) {
     psh_cc_out(&cmd, executable);
     psh_cc_in(&cmd, source);
     psh_cc_flags(&cmd);
-    psh_cmd_append(&cmd, "-Iarena_allocator", "-Ipsh_core");
+    psh_cc_include(&cmd, "arena_allocator");
+    psh_cc_include(&cmd, "psh_core");
     if (!psh_cmd_run(&cmd)) exit(EXIT_FAILURE);
 
     psh_cmd_append(&cmd, executable);
@@ -120,4 +125,4 @@ psh_ternary psh__needs_rebuild(byte *executable, byte *src[], usize srcnum) {
     return true;
 }
 
-#endif
+#endif //PSH_BUILD_IMPL
