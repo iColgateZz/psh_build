@@ -5,7 +5,9 @@
 #define PSH_CORE_NO_PREFIX
 #include "psh_build.h"
 
-i32 main(void) {
+i32 main(i32 argc, byte *argv[]) {
+    PSH_REBUILD(argc, argv);
+
     Arena perm_arena = arena_init(MB(1));
     if (!arena_check_init(perm_arena)) {
         printf("Something went wrong!\n");

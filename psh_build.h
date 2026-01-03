@@ -44,6 +44,22 @@ void psh_rebuild(i32 argc, byte *argv[], byte *source, ...);
 
 #define psh_shift(array, array_size) (PSH_ASSERT((array_size) > 0), (array_size)--, *(array)++)
 
+#ifndef psh_cc
+    #define psh_cc(cmd) psh_cmd_append(cmd, "gcc")
+#endif
+
+#ifndef psh_cc_out
+    #define psh_cc_out(cmd, output) psh_cmd_append(cmd, "-o", output)
+#endif
+
+#ifndef psh_cc_in
+    #define psh_cc_in(cmd, ...) psh_cmd_append(cmd, __VA_ARGS__)
+#endif
+
+#ifndef psh_cc_flags
+    #define psh_cc_flags(cmd) psh_cmd_append(cmd, "-Wall", "-Wextra")
+#endif
+
 #endif
 
 #ifdef PSH_BUILD_IMPL
@@ -80,11 +96,28 @@ void psh_rebuild(i32 argc, byte *argv[], byte *source, ...) {
         psh_da_free(sources);
         return;
     }
+
+    Psh_Cmd cmd = {0};
+    psh_cc(&cmd);
+    psh_cc_out(&cmd, executable);
+    psh_cc_in(&cmd, source);
+    psh_cc_flags(&cmd);
+    psh_cmd_append(&cmd, "-Iarena_allocator", "-Ipsh_core");
+    if (!psh_cmd_run(&cmd)) exit(EXIT_FAILURE);
+
+    psh_cmd_append(&cmd, executable);
+    psh_da_append_many(&cmd, argv, argc);
+    if (!psh_cmd_run(&cmd)) exit(EXIT_FAILURE);
+
+    exit(EXIT_SUCCESS);
 }
 
 static inline
 psh_ternary psh__needs_rebuild(byte *executable, byte *src[], usize srcnum) {
-
+    PSH_UNUSED(executable);
+    PSH_UNUSED(src);
+    PSH_UNUSED(srcnum);
+    return true;
 }
 
 #endif
