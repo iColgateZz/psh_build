@@ -2,11 +2,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#define ARENA_IMPL
-    #include "arena.h"
+#define PSH_BUILD_IMPL
 #define PSH_CORE_NO_PREFIX
-#define PSH_CORE_IMPL
-    #include "psh_core.h"
+#include "psh_build.h"
 
 i32 main(void) {
     Arena perm_arena = arena_init(MB(1));
