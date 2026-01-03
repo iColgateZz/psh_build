@@ -35,6 +35,9 @@ typedef size_t      usize;
 
 #endif
 
+typedef i32 psh_ternary;
+#define err -1
+
 void psh_rebuild(i32 argc, byte *argv[], byte *source, ...);
 #define PSH_REBUILD(argc, argv)           psh_rebuild(argc, argv, __FILE__, NULL);
 #define PSH_REBUILD_MANY(argc, argv, ...) psh_rebuild(argc, argv, __FILE__, __VA_ARGS__, NULL);
@@ -50,7 +53,7 @@ void psh_rebuild(i32 argc, byte *argv[], byte *source, ...);
 #define PSH_CORE_IMPL
     #include "psh_core.h"
 
-static inline i32 psh__needs_rebuild(byte *executable, byte *src[], usize srcnum);
+static inline psh_ternary psh__needs_rebuild(byte *executable, byte *src[], usize srcnum);
 
 void psh_rebuild(i32 argc, byte *argv[], byte *source, ...) {
     byte *executable = psh_shift(argv, argc);
@@ -71,17 +74,17 @@ void psh_rebuild(i32 argc, byte *argv[], byte *source, ...) {
     }
     va_end(args);
 
-    i32 needs_rebuild = psh__needs_rebuild(executable, sources.items, sources.count);
-    if (needs_rebuild < 0) exit(EXIT_FAILURE);
-    if (!needs_rebuild) {
+    psh_ternary needs_rebuild = psh__needs_rebuild(executable, sources.items, sources.count);
+    if (needs_rebuild == err) exit(EXIT_FAILURE);
+    if (needs_rebuild == false) {
         psh_da_free(sources);
         return;
     }
 }
 
 static inline
-i32 psh__needs_rebuild(byte *executable, byte *src[], usize srcnum) {
-    
+psh_ternary psh__needs_rebuild(byte *executable, byte *src[], usize srcnum) {
+
 }
 
 #endif
