@@ -1,14 +1,14 @@
 #ifndef STRING_INCLUDE
 #define STRING_INCLUDE
 
-#include "types.h"
+#include <stddef.h>
 
 typedef struct {
-    byte *s;
-    isize len;
+    char *s;
+    size_t len;
 } s8;
 
-#define countof(x)              (isize)(sizeof(x) / sizeof(*(x)))
+#define countof(x)              (size_t)(sizeof(x) / sizeof(*(x)))
 #define lenof(s)                countof(s) - 1
 
 #define s8(...)                       s8_(__VA_ARGS__, s8_from_heap, s8_read_only)(__VA_ARGS__)
