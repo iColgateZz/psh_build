@@ -44,24 +44,34 @@ void psh_rebuild(i32 argc, byte *argv[], byte *source, ...);
 
 #define psh_shift(array, array_size) (PSH_ASSERT((array_size) > 0), (array_size)--, *(array)++)
 
+#ifndef PSH_CC
+    #define PSH_CC "gcc"
+#endif
 #ifndef psh_cc
-    #define psh_cc(cmd) psh_cmd_append(cmd, "gcc")
+    #define psh_cc(cmd) psh_cmd_append(cmd, PSH_CC)
 #endif
 
-#ifndef psh_cc_out
+#ifndef PSH_CC_OUT
     #define psh_cc_out(cmd, output) psh_cmd_append(cmd, "-o", output)
+#else
+    #define psh_cc_out(cmd, output) psh_cmd_append(cmd, "-o", PSH_CC_OUT)
 #endif
 
 #ifndef psh_cc_in
     #define psh_cc_in(cmd, ...) psh_cmd_append(cmd, __VA_ARGS__)
 #endif
 
+#ifndef PSH_CC_FLAGS 
+    #define PSH_CC_FLAGS  "-Wall", "-Wextra", "-O2"
+#endif
 #ifndef psh_cc_flags
-    #define psh_cc_flags(cmd) psh_cmd_append(cmd, "-Wall", "-Wextra")
+    #define psh_cc_flags(cmd) psh_cmd_append(cmd, PSH_CC_FLAGS)
 #endif
 
-#ifndef psh_cc_include
-    #define psh_cc_include(cmd, include) psh_cmd_append(cmd, "-I"include)
+#ifdef PSH_CC_MORE
+    #define psh_cc_more(cmd) psh_cmd_append(cmd, PSH_CC_MORE)
+#else
+    #define psh_cc_more(cmd) PSH_UNUSED(cmd)
 #endif
 
 #endif //PSH_BUILD_INCLUDE
@@ -104,15 +114,12 @@ void psh_rebuild(i32 argc, byte *argv[], byte *source, ...) {
     }
 
     Psh_Cmd cmd = {0};
-    // compiler choice is fixed
     psh_cc(&cmd);
-    // executable's name does not change
     psh_cc_out(&cmd, executable);
     // even if there are multiple sources, the prog assumes a unity build
     psh_cc_in(&cmd, source);
-    // flag choice is fixed
     psh_cc_flags(&cmd);
-    // User should be able to pass more options
+    psh_cc_more(&cmd);
     if (!psh_cmd_run(&cmd)) exit(EXIT_FAILURE);
 
     psh_cmd_append(&cmd, executable);
