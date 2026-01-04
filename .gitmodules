@@ -4,3 +4,6 @@
 [submodule "psh_core"]
 	path = psh_core
 	url = https://github.com/iColgateZz/psh_core.git
+[submodule "allocators"]
+	path = allocators
+	url = https://github.com/iColgateZz/allocators.git
