@@ -1,8 +1,8 @@
 #ifndef PSH_BUILD_INCLUDE
 #define PSH_BUILD_INCLUDE
 
-#include "arena.h"
-#include "psh_core.h"
+#include "arena_allocator/arena.h"
+#include "psh_core/psh_core.h"
 
 #ifndef DEFINITIONS_INCLUDE
 #define DEFINITIONS_INCLUDE
@@ -69,9 +69,9 @@ void psh_rebuild(i32 argc, byte *argv[], byte *source, ...);
 #ifdef PSH_BUILD_IMPL
 
 #define ARENA_IMPL
-    #include "arena.h"
+    #include "arena_allocator/arena.h"
 #define PSH_CORE_IMPL
-    #include "psh_core.h"
+    #include "psh_core/psh_core.h"
 
 #include <sys/stat.h>
 
@@ -112,9 +112,7 @@ void psh_rebuild(i32 argc, byte *argv[], byte *source, ...) {
     psh_cc_in(&cmd, source);
     // flag choice is fixed
     psh_cc_flags(&cmd);
-    
-    psh_cc_include(&cmd, "arena_allocator");
-    psh_cc_include(&cmd, "psh_core");
+    // User should be able to pass more options
     if (!psh_cmd_run(&cmd)) exit(EXIT_FAILURE);
 
     psh_cmd_append(&cmd, executable);
