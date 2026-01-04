@@ -1,7 +1,7 @@
 #ifndef PSH_BUILD_INCLUDE
 #define PSH_BUILD_INCLUDE
 
-#include "arena_allocator/arena.h"
+#include "allocators/arena.h"
 #include "psh_core/psh_core.h"
 
 #ifndef DEFINITIONS_INCLUDE
@@ -69,7 +69,7 @@ void psh_rebuild(i32 argc, byte *argv[], byte *source, ...);
 #ifdef PSH_BUILD_IMPL
 
 #define ARENA_IMPL
-    #include "arena_allocator/arena.h"
+    #include "allocators/arena.h"
 #define PSH_CORE_IMPL
     #include "psh_core/psh_core.h"
 
