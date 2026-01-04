@@ -104,10 +104,15 @@ void psh_rebuild(i32 argc, byte *argv[], byte *source, ...) {
     }
 
     Psh_Cmd cmd = {0};
+    // compiler choice is fixed
     psh_cc(&cmd);
+    // executable's name does not change
     psh_cc_out(&cmd, executable);
+    // even if there are multiple sources, the prog assumes a unity build
     psh_cc_in(&cmd, source);
+    // flag choice is fixed
     psh_cc_flags(&cmd);
+    
     psh_cc_include(&cmd, "arena_allocator");
     psh_cc_include(&cmd, "psh_core");
     if (!psh_cmd_run(&cmd)) exit(EXIT_FAILURE);
