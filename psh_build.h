@@ -73,7 +73,9 @@ void psh_rebuild(i32 argc, byte *argv[], byte *source, ...);
 #define PSH_CORE_IMPL
     #include "psh_core.h"
 
-static inline psh_ternary psh__needs_rebuild(byte *executable, byte *src[], usize srcnum);
+#include <sys/stat.h>
+
+static inline psh_ternary psh__needs_rebuild(byte *executable, byte *src[], usize src_count);
 
 void psh_rebuild(i32 argc, byte *argv[], byte *source, ...) {
     byte *executable = psh_shift(argv, argc);
@@ -118,11 +120,29 @@ void psh_rebuild(i32 argc, byte *argv[], byte *source, ...) {
 }
 
 static inline
-psh_ternary psh__needs_rebuild(byte *executable, byte *src[], usize srcnum) {
-    PSH_UNUSED(executable);
-    PSH_UNUSED(src);
-    PSH_UNUSED(srcnum);
-    return true;
+psh_ternary psh__needs_rebuild(byte *executable, byte *src[], usize src_count) {
+    struct stat statbuf = {0};
+    if (stat(executable, &statbuf) < 0) {
+        // Executable does not exist
+        if (errno == ENOENT) return true;
+
+        psh_logger(PSH_ERROR, "could not get info about executable %s: %s", executable, strerror(errno));
+        return err;
+    }
+    u32 exec_mod_time = statbuf.st_mtime;
+
+    for (usize i = 0; i < src_count; ++i) {
+        byte *source = src[i];
+        if (stat(source, &statbuf) < 0) {
+            psh_logger(PSH_ERROR, "could not get info about source %s: %s", source, strerror(errno));
+            return err;
+        }
+
+        u32 source_mod_time = statbuf.st_mtime;
+        if (source_mod_time > exec_mod_time) return true;
+    }
+
+    return false;
 }
 
 #endif //PSH_BUILD_IMPL
