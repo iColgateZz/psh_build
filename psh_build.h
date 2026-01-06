@@ -47,31 +47,18 @@ void psh_rebuild(i32 argc, byte *argv[], byte *source, ...);
 #ifndef PSH_CC
     #define PSH_CC "gcc"
 #endif
-#ifndef psh_cc
-    #define psh_cc(cmd) psh_cmd_append(cmd, PSH_CC)
-#endif
-
-#ifndef PSH_CC_OUT
-    #define psh_cc_out(cmd, output) psh_cmd_append(cmd, "-o", output)
-#else
-    #define psh_cc_out(cmd, output) psh_cmd_append(cmd, "-o", PSH_CC_OUT)
-#endif
-
-#ifndef psh_cc_in
-    #define psh_cc_in(cmd, ...) psh_cmd_append(cmd, __VA_ARGS__)
-#endif
 
 #ifndef PSH_CC_FLAGS 
     #define PSH_CC_FLAGS  "-Wall", "-Wextra", "-O2"
 #endif
-#ifndef psh_cc_flags
-    #define psh_cc_flags(cmd) psh_cmd_append(cmd, PSH_CC_FLAGS)
+
+#ifndef PSH_CC_MORE_FLAGS
+    #define PSH_CC_MORE_FLAGS ""
 #endif
 
-#ifdef PSH_CC_MORE
-    #define psh_cc_more(cmd) psh_cmd_append(cmd, PSH_CC_MORE)
-#else
-    #define psh_cc_more(cmd) PSH_UNUSED(cmd)
+#ifndef PSH_CC_CMD
+    #define PSH_CC_CMD(target, source1, ...) \
+            PSH_CC, PSH_CC_FLAGS, PSH_CC_MORE_FLAGS, "-o", target, source1, __VA_ARGS__
 #endif
 
 #endif //PSH_BUILD_INCLUDE
@@ -114,12 +101,8 @@ void psh_rebuild(i32 argc, byte *argv[], byte *source, ...) {
     }
 
     Psh_Cmd cmd = {0};
-    psh_cc(&cmd);
-    psh_cc_out(&cmd, executable);
     // even if there are multiple sources, the prog assumes a unity build
-    psh_cc_in(&cmd, source);
-    psh_cc_flags(&cmd);
-    psh_cc_more(&cmd);
+    psh_cmd_append(&cmd, PSH_CC_CMD(executable, source));
     if (!psh_cmd_run(&cmd)) exit(EXIT_FAILURE);
 
     psh_cmd_append(&cmd, executable);
