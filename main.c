@@ -6,17 +6,13 @@
     #include "psh_build.h"
 
 i32 main(i32 argc, byte *argv[]) {
-    PSH_REBUILD_MANY(argc, argv, "psh_build.h");
+    PSH_REBUILD_UNITY(argc, argv, "psh_build.h");
 
     Arena perm_arena = arena_init(MB(1));
-    if (!arena_check_init(perm_arena)) {
-        printf("Something went wrong!\n");
-        return -1;
-    }
 
     byte *string = arena_push(&perm_arena, byte, 20);
     if (!string) {
-        printf("Something went wrong 2!\n");
+        printf("Something went wrong!\n");
         return -1;
     }
 
@@ -26,7 +22,7 @@ i32 main(i32 argc, byte *argv[]) {
     cmd_append(&cmd, "echo", string);
 
     if (!cmd_run(&cmd)) {
-        printf("Something went wrong 3!\n");
+        printf("Something went wrong 2!\n");
         return -1;
     }
 

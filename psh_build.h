@@ -38,9 +38,10 @@ typedef size_t      usize;
 typedef i32 psh_ternary;
 #define err -1
 
-void psh_rebuild(i32 argc, byte *argv[], byte *source, ...);
-#define PSH_REBUILD(argc, argv)           psh_rebuild(argc, argv, __FILE__, NULL);
-#define PSH_REBUILD_MANY(argc, argv, ...) psh_rebuild(argc, argv, __FILE__, __VA_ARGS__, NULL);
+void psh_rebuild_unity(i32 argc, byte *argv[], byte *src[], usize src_count);
+#define PSH_REBUILD_UNITY(argc, argv, ...)                                      \
+        psh_rebuild_unity(argc, argv,  ((byte *[]){__FILE__, __VA_ARGS__}),     \
+        (sizeof((byte *[]){__FILE__, __VA_ARGS__}) / sizeof(byte *)));
 
 #define psh_shift(array, array_size) (PSH_ASSERT((array_size) > 0), (array_size)--, *(array)++)
 
@@ -74,34 +75,15 @@ void psh_rebuild(i32 argc, byte *argv[], byte *source, ...);
 
 static inline psh_ternary psh__needs_rebuild(byte *executable, byte *src[], usize src_count);
 
-void psh_rebuild(i32 argc, byte *argv[], byte *source, ...) {
+void psh_rebuild_unity(i32 argc, byte *argv[], byte *src[], usize src_count) {
     byte *executable = psh_shift(argv, argc);
+    byte * source = src[0];
 
-    struct {
-        byte **items;
-        usize count;
-        usize capacity;
-    } sources = {0};
-    psh_da_append(&sources, source);
-
-    va_list args;
-    va_start(args, source);
-    while (true) {
-        byte *path = va_arg(args, byte *);
-        if (path == NULL) break;
-        psh_da_append(&sources, path);
-    }
-    va_end(args);
-
-    psh_ternary needs_rebuild = psh__needs_rebuild(executable, sources.items, sources.count);
+    psh_ternary needs_rebuild = psh__needs_rebuild(executable, src, src_count);
     if (needs_rebuild == err) exit(EXIT_FAILURE);
-    if (needs_rebuild == false) {
-        psh_da_free(sources);
-        return;
-    }
+    if (needs_rebuild == false) return;
 
     Psh_Cmd cmd = {0};
-    // even if there are multiple sources, the prog assumes a unity build
     psh_cmd_append(&cmd, PSH_CC_CMD(executable, source));
     if (!psh_cmd_run(&cmd)) exit(EXIT_FAILURE);
 
