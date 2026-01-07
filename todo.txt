@@ -1,0 +1,5 @@
+1. capture and parse the output of gcc -MMD ...
+2. get a list of dependencies
+3. run a unity build
+
+Update psh_core readme
