@@ -1,0 +1,7 @@
+gcc -MM file_name.c
+
+Find all .c files in the file system (find . -type f -name '*.c').
+Run the compiler to discover dependencies.
+If a .c file that corresponds to a .o file was changed, rebuild the .o file.
+If a .h file the .o file depends on was changed, rebuild the .o file.
+If any .o file was rebuilt, link the program together.
