@@ -16,7 +16,8 @@ i32 main(i32 argc, byte *argv[]) {
         return -1;
     }
 
-    memcpy(string, "haaaii!!!", 11);
+    byte str[] = "haaaii!!!";
+    memcpy(string, str, sizeof str);
 
     Cmd cmd = {0};
     cmd_append(&cmd, "echo", string);
