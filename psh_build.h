@@ -43,7 +43,7 @@ void psh_rebuild_unity(i32 argc, byte *argv[], byte *src[], usize src_count);
         psh_rebuild_unity(argc, argv,  ((byte *[]){__FILE__, __VA_ARGS__}),     \
         (sizeof((byte *[]){__FILE__, __VA_ARGS__}) / sizeof(byte *)));
 
-void psh_rebuild_unity_auto(i32 argc, byte *argv[], byte *source);
+void psh_rebuild_unity_auto(i32 argc, byte *argv[argc], byte *source);
 #define PSH_REBUILD_UNITY_AUTO(argc, argv)                   \
         psh_rebuild_unity_auto(argc, argv, __FILE__);
 
