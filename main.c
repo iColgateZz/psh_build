@@ -6,7 +6,7 @@
     #include "psh_build.h"
 
 i32 main(i32 argc, byte *argv[]) {
-    PSH_REBUILD_UNITY(argc, argv, "psh_build.h");
+    PSH_REBUILD_UNITY_AUTO(argc, argv);
 
     Arena perm_arena = arena_init(MB(1));
 
