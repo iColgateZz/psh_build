@@ -38,7 +38,7 @@ typedef size_t      usize;
 typedef i32 psh_ternary;
 #define err -1
 
-void psh_rebuild_unity(i32 argc, byte *argv[], byte *src[], usize src_count);
+void psh_rebuild_unity(i32 argc, byte *argv[argc], byte *src[], usize src_count);
 #define PSH_REBUILD_UNITY(argc, argv, ...)                                      \
         psh_rebuild_unity(argc, argv,  ((byte *[]){__FILE__, __VA_ARGS__}),     \
         (sizeof((byte *[]){__FILE__, __VA_ARGS__}) / sizeof(byte *)));
