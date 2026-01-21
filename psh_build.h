@@ -79,7 +79,7 @@ void psh_rebuild_unity_auto(i32 argc, byte *argv[], byte *source);
 
 static inline psh_ternary psh__needs_rebuild(byte *executable, byte *src[], usize src_count);
 
-void psh_rebuild_unity(i32 argc, byte *argv[], byte *src[], usize src_count) {
+void psh_rebuild_unity(i32 argc, byte *argv[argc], byte *src[], usize src_count) {
     byte *executable = psh_shift(argv, argc);
     byte *source = src[0];
 
@@ -139,7 +139,7 @@ b32 psh__is_num(byte c);
 b32 psh__is_path_symbol(byte c);
 b32 psh__is_path(byte c);
 
-void psh_rebuild_unity_auto(i32 argc, byte *argv[], byte *source) {
+void psh_rebuild_unity_auto(i32 argc, byte *argv[argc], byte *source) {
     Psh_Unix_Pipe pipe = {0};
     if (!psh_pipe_open(&pipe)) exit(EXIT_FAILURE);
 
