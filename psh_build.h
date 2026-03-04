@@ -149,7 +149,7 @@ void psh_rebuild_unity_auto(i32 argc, byte *argv[argc], byte *source) {
     psh_da_free(cmd);
 
     Psh_Fd_Reader reader = {.fd = pipe.read_fd};
-    if (!psh_fd_read1(&reader)) exit(EXIT_FAILURE);
+    if (!psh_fd_read(&reader)) exit(EXIT_FAILURE);
 
     Sources sources = psh__tokenize_deps(reader.store.count, reader.store.items);
     psh_rebuild_unity(argc, argv, sources.items, sources.count);
