@@ -92,7 +92,7 @@ void psh_rebuild_unity(i32 argc, byte *argv[argc], byte *src[], usize src_count)
     if (!psh_cmd_run(&cmd)) exit(EXIT_FAILURE);
 
     psh_cmd_append(&cmd, executable);
-    psh_da_append_many(&cmd, argv, argc);
+    psh_list_append_many(&cmd, argv, argc);
     if (!psh_cmd_run(&cmd)) exit(EXIT_FAILURE);
 
     exit(EXIT_SUCCESS);
@@ -146,7 +146,7 @@ void psh_rebuild_unity_auto(i32 argc, byte *argv[argc], byte *source) {
     Psh_Cmd cmd = {0};
     psh_cmd_append(&cmd, "gcc", "-MM", source);
     if (!psh_cmd_run(&cmd, .fdout = pipe.write_fd)) exit(EXIT_FAILURE);
-    psh_da_free(cmd);
+    psh_list_free(cmd);
 
     Psh_Fd_Reader reader = {.fd = pipe.read_fd};
     if (!psh_fd_read(&reader)) exit(EXIT_FAILURE);
@@ -154,8 +154,8 @@ void psh_rebuild_unity_auto(i32 argc, byte *argv[argc], byte *source) {
     Sources sources = psh__tokenize_deps(reader.store.count, reader.store.items);
     psh_rebuild_unity(argc, argv, sources.items, sources.count);
 
-    psh_da_free(reader.store);
-    psh_da_free(sources);
+    psh_list_free(reader.store);
+    psh_list_free(sources);
 }
 
 Sources psh__tokenize_deps(usize len, byte string[len]) {
@@ -172,7 +172,7 @@ Sources psh__tokenize_deps(usize len, byte string[len]) {
         usize start = position;
         while (psh__is_path(string[position]) && position < len) ++position;
 
-        psh_da_append(&sources, string + start);
+        psh_list_append(&sources, string + start);
         string[position] = 0;
         ++position;
         // printf("Dep: %s\n", string + start);
